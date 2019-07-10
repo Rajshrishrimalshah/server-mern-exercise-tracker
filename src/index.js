@@ -6,6 +6,11 @@ import mongoose from "mongoose";
 import users from "./routes/users";
 import exercises from "./routes/exercises";
 
+// if (!global._babelPolyfill) {
+//   require("babel-polyfill");
+// }
+import "@babel/polyfill";
+
 dotenv.config();
 
 const app = express();

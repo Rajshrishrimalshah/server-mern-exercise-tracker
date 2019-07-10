@@ -12,8 +12,13 @@ var _users = _interopRequireDefault(require("./routes/users"));
 
 var _exercises = _interopRequireDefault(require("./routes/exercises"));
 
+require("@babel/polyfill");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+// if (!global._babelPolyfill) {
+//   require("babel-polyfill");
+// }
 _dotenv["default"].config();
 
 var app = (0, _express["default"])();
