@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 import users from "./routes/users";
 import exercises from "./routes/exercises";
+import { errorHandler } from "./routes/errorHandler";
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ connection.once("open", () => {
 
 app.use("/exercises", exercises);
 app.use("/users", users);
+
+app.use(errorHandler);
 
 app.use("/", (req, res) => {
   res.send("!!! Welcome to Exercise-Tracker !!!");

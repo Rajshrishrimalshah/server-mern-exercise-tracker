@@ -4,18 +4,20 @@ import Exercise from "../models/exercise.model";
 const router = express.Router();
 
 //Read all Collection from database
-router.get("/", async (req, res) => {
-  const Exercises = await Exercise.find();
-
+router.get("/", async (req, res, next) => {
   try {
+    const Exercises = await Exercise.find();
     res.json(Exercises);
   } catch (err) {
-    res.status(400).json("Error: ", err);
+    next({
+      message: "Exercises does not exist",
+      status: 404
+    });
   }
 });
 
 //Create collection inside database
-router.post("/add", async (req, res) => {
+router.post("/add", async (req, res, next) => {
   const { username, description } = req.body;
   const duration = Number(req.body.duration);
   const date = Date.parse(req.body.date);
@@ -23,59 +25,83 @@ router.post("/add", async (req, res) => {
   const newExercises = new Exercise({ username, description, duration, date });
 
   try {
-    await newExercises.save();
-    res.send("Exercise added successfully !");
+    const exercise = await newExercises.save();
+
+    if (!exercise)
+      next({
+        message: "exercise already exist",
+        status: 404
+      });
+
+    res.send({ message: " create successfully !" });
   } catch (err) {
-    res.status(500).json("Error: ", err);
+    next({
+      message: "Unknown server error",
+      status: 500
+    });
   }
 });
 
 //Get collection By ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const exercise = await Exercise.findById(req.params.id);
-    if (!exercise) res.status(404).send("No item found");
+
+    if (!exercise)
+      next({
+        message: "No record found",
+        status: 404
+      });
+
     res.status(200).json(exercise);
   } catch (err) {
-    res.status(500).send(err);
+    next({
+      message: "'Unknown server error",
+      status: 500
+    });
   }
 });
 
 //Delete collection By ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    const exercise = await Exercise.findByIdAndDelete(req.params.id);
-    if (!exercise) res.status(404).send("No item found");
-    res.status(200).json("Exercise deleted successfully !");
+    const exercise = await Exercise.findByIdAndRemove(req.params.id);
+
+    if (!exercise)
+      next({
+        message: "No record found",
+        status: 404
+      });
+
+    res.status(200).json({ message: " delete successfully !" });
   } catch (err) {
-    res.status(500).send(err);
+    next({
+      message: "'Unknown server error",
+      status: 404
+    });
   }
 });
 
 //Update collection By ID
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", async (req, res, next) => {
   try {
-    await Exercise.findByIdAndUpdate(req.params.id, req.body);
-    res.status(200).json("Exercise updated successfully !");
+    const exercise = await Exercise.findByIdAndUpdate(req.params.id, req.body);
+
+    if (!exercise) {
+      next({
+        message: "No record found",
+        status: 404
+      });
+    } else {
+      res.status(200).send({ message: " update successfully !" });
+    }
   } catch (err) {
-    res.status(500).send(err);
+    next({
+      message: "'Unknown server error",
+      status: 500
+    });
   }
-
-  //Update collection using another method
-  // Exercise.findById(req.param.id)
-  //   .then(exercise => {
-  //     exercise.username = req.body.username;
-  //     exercise.description = req.body.description;
-  //     exercise.duration = Number(req.body.duration);
-  //     exercise.date = Date.parse(req.body.date);
-
-  //     exercise
-  //       .save()
-  //       .then(() => res.json("Exercise updated !"))
-  //       .catch(err => res.status(404).json("Error: ", err));
-  //   })
-  //   .catch(err => res.status(404).json("Error: ", err));
 });
 
 export default router;

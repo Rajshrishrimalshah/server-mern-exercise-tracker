@@ -12,6 +12,8 @@ var _users = _interopRequireDefault(require("./routes/users"));
 
 var _exercises = _interopRequireDefault(require("./routes/exercises"));
 
+var _errorHandler = require("./routes/errorHandler");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _dotenv.default.config();
@@ -34,6 +36,7 @@ connection.once("open", () => {
 });
 app.use("/exercises", _exercises.default);
 app.use("/users", _users.default);
+app.use(_errorHandler.errorHandler);
 app.use("/", (req, res) => {
   res.send("!!! Welcome to Exercise-Tracker !!!");
 });
