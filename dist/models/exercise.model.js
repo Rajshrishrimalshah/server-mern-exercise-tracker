@@ -3,14 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Schema = _mongoose["default"].Schema;
-var exerciseSchema = new Schema({
+const Schema = _mongoose.default.Schema;
+const exerciseSchema = new Schema({
   username: {
     type: String,
     required: true
@@ -31,7 +31,7 @@ var exerciseSchema = new Schema({
   timestamps: true
 });
 
-var Exercise = _mongoose["default"].model("Exercise", exerciseSchema);
+const Exercise = _mongoose.default.model("Exercise", exerciseSchema);
 
 var _default = Exercise;
-exports["default"] = _default;
+exports.default = _default;

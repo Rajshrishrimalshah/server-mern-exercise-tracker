@@ -12,36 +12,29 @@ var _users = _interopRequireDefault(require("./routes/users"));
 
 var _exercises = _interopRequireDefault(require("./routes/exercises"));
 
-require("@babel/polyfill");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+_dotenv.default.config();
 
-// if (!global._babelPolyfill) {
-//   require("babel-polyfill");
-// }
-_dotenv["default"].config();
+const app = (0, _express.default)();
+const port = process.env.PORT || 3000;
+const uri = process.env.ATLAS_URI;
+const connection = _mongoose.default.connection;
+app.use((0, _cors.default)());
+app.use(_express.default.json());
 
-var app = (0, _express["default"])();
-var port = process.env.PORT || 3000;
-var uri = process.env.ATLAS_URI;
-var connection = _mongoose["default"].connection;
-app.use((0, _cors["default"])());
-app.use(_express["default"].json());
-
-_mongoose["default"].connect(uri, {
+_mongoose.default.connect(uri, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false
 });
 
-connection.once("open", function () {
+connection.once("open", () => {
   console.log("MongoDB database connected successfully");
 });
-app.use("/exercises", _exercises["default"]);
-app.use("/users", _users["default"]);
-app.use("/", function (req, res) {
+app.use("/exercises", _exercises.default);
+app.use("/users", _users.default);
+app.use("/", (req, res) => {
   res.send("!!! Welcome to Exercise-Tracker !!!");
 });
-app.listen(port, function () {
-  return console.log("Example app listening on port ".concat(port, "!"));
-});
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
